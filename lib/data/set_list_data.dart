@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:le_word_app/data/hive_database.dart';
 import 'package:le_word_app/models/set.dart';
 import 'package:le_word_app/models/word.dart';
 
 class SetListData extends ChangeNotifier {
+
+  final db = HiveDatabase();
+
   List<WordSetModel> setList = [
     WordSetModel(
       name: 'Słówka z hiszpana',
@@ -22,6 +26,15 @@ class SetListData extends ChangeNotifier {
     )
   ];
 
+  void initializeWordList() {
+    if (db.isPreviousDataExist()) {
+      setList = db.readFromDatabase();
+      // db.readFromDatabase();
+    } else {
+      db.saveToDatabase(setList);
+    }
+  }
+
   // get word list
   List<WordSetModel> getSetListData() {
     return setList;
@@ -31,6 +44,9 @@ class SetListData extends ChangeNotifier {
     setList.add(WordSetModel(name: setName, language: language, words: []));
 
     notifyListeners();
+    
+    // save to db
+    db.saveToDatabase(setList);
   }
 
   WordSetModel getSetFromGivenName(String setName) {
@@ -51,6 +67,9 @@ class SetListData extends ChangeNotifier {
     );
 
     notifyListeners();
+
+    // save to db
+    db.saveToDatabase(setList);
   }
 
   // check-off wordTile (tam też notifyListeners)

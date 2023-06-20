@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:le_word_app/data/set_list_data.dart';
 import 'package:le_word_app/pages/home_page.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  // initialize hive
+  await Hive.initFlutter();
+  // open a hive box
+  await Hive.openBox("word_set_database");
+  
   runApp(const MyApp());
 }
 
