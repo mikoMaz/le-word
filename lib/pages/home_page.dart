@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:le_word_app/data/set_list_data.dart';
+import 'package:le_word_app/pages/learn_page.dart';
 import 'package:le_word_app/pages/set_page.dart';
 import 'package:provider/provider.dart';
 
@@ -11,13 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     super.initState();
     Provider.of<SetListData>(context, listen: false).initializeWordList();
   }
-
 
   final setNewNameTextController = TextEditingController();
 
@@ -45,12 +44,22 @@ class _HomePageState extends State<HomePage> {
 
   void goToSetByName(String setName) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SetPage(
-            setName: setName,
-          ),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => SetPage(
+          setName: setName,
+        ),
+      ),
+    );
+  }
+
+  void goToLearnByName(String setName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LearnPage(setName: setName),
+      ),
+    );
   }
 
   void save() {
@@ -85,12 +94,32 @@ class _HomePageState extends State<HomePage> {
         ),
         body: ListView.builder(
           itemCount: value.getSetListData().length,
-          itemBuilder: (context, index) => ListTile(
+          itemBuilder: (context,
+                  index) => /* ListTile(
             title: Text(value.getSetListData()[index].name),
             trailing: IconButton(
               icon: Icon(Icons.arrow_forward_ios),
               onPressed: () => goToSetByName(value.getSetListData()[index].name),
             ),
+          ), */
+              Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(children: [
+                Text(value.getSetListData()[index].name),
+                ElevatedButton.icon(
+                    onPressed: () =>
+                        goToSetByName(value.getSetListData()[index].name),
+                    icon: Icon(Icons.account_circle),
+                    label: Text('')),
+                ElevatedButton.icon(
+                    onPressed: () =>
+                        goToLearnByName(value.getSetListData()[index].name),
+                    icon: Icon(Icons.abc_sharp),
+                    label: Text(''))
+              ]),
+            ),
+            margin: EdgeInsets.all(14),
           ),
         ),
       )),
