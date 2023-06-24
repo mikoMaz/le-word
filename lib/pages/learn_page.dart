@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:dart_random_choice/dart_random_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:le_word_app/data/set_list_data.dart';
@@ -116,8 +114,40 @@ class _LearnPageState extends State<LearnPage> {
                 // () => _changeLastWordIndex(
                 //     randomWordIndexByConfidenceLevel, _lastWordIndex);
 
-                return Text('Word: ${currentWordToLearn.defaultWord}');
+                // return Text('Word: ${currentWordToLearn.defaultWord}');
                 // return Text('Word: ${value.getSetFromGivenName(widget.setName).words[val].defaultWord}');
+                return Column(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Container(
+                          margin: EdgeInsets.all(25),
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Center(
+                              child: Text(
+                            '${currentWordToLearn.defaultWord}',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontFamily: 'Noto Sans',
+                            ),
+                          )
+                              // child: Column(
+                              //   children: [
+                              //     Text('Word: ${currentWordToLearn.defaultWord}')
+                              //   ],
+                              // ),
+                              ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               }
             },
           ),
