@@ -69,6 +69,7 @@ int badAnswer(int confidenceLevel) {
 }
 
 List<int> returnQuestions(int setLength, int lastWordIndex) {
+  // TODO: show wrong answers according to confidenceLevel
   List<int> indexesOfRandomWords = [-1, -1, -1];
   int indexOfCorrectAnswer = Random().nextInt(3);
   indexesOfRandomWords[indexOfCorrectAnswer] = lastWordIndex;
@@ -94,6 +95,8 @@ List<int> returnQuestions(int setLength, int lastWordIndex) {
   return indexesOfRandomWords;
 }
 
+
+
 class _LearnPageState extends State<LearnPage> {
   // @override
   // void initState() {
@@ -107,7 +110,11 @@ class _LearnPageState extends State<LearnPage> {
   // }
 
   final _counterNotifier = ValueNotifier<int>(0);
+  final _questionNotifier = ValueNotifier<int>(0);
   int _lastWordIndex = -1;
+  Color _questionOneColorState = Colors.white70;
+  Color _questionTwoColorState = Colors.white70;
+  Color _questionThreeColorState = Colors.white70;
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +169,7 @@ class _LearnPageState extends State<LearnPage> {
                           ),
                           child: Center(
                             child: Text(
-                              '${currentWordToLearn.defaultWord}',
+                              currentWordToLearn.defaultWord,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 30,
@@ -173,37 +180,69 @@ class _LearnPageState extends State<LearnPage> {
                         ),
                       ),
                     ),
-                    Card(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(value
-                            .getSetFromGivenName(widget.setName)
-                            .words[questions[0]]
-                            .backWord),
-                      ),
-                    ),
-                    Card(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(value
-                            .getSetFromGivenName(widget.setName)
-                            .words[questions[1]]
-                            .backWord),
-                      ),
-                    ),
-                    Card(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(value
-                            .getSetFromGivenName(widget.setName)
-                            .words[questions[2]]
-                            .backWord),
-                      ),
-                    ),
-                    Text(value
-                        .getSetFromGivenName(widget.setName)
-                        .words[questions[questions[3]]]
-                        .backWord),
+                    ValueListenableBuilder(
+                      valueListenable: _questionNotifier,
+                      builder: (questionContext, questionValue, _) {
+                        return Column(
+                          children: [
+                            Card(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _questionOneColorState =
+                                      checkAnswer(1, questions[3], 0);
+                                  _questionNotifier.value++;
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _questionOneColorState,
+                                ),
+                                child: Text(value
+                                    .getSetFromGivenName(widget.setName)
+                                    .words[questions[0]]
+                                    .backWord),
+                              ),
+                            ),
+                            Card(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _questionTwoColorState =
+                                      checkAnswer(2, questions[3], 1);
+                                  _questionNotifier.value++;
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _questionTwoColorState,
+                                ),
+                                child: Text(value
+                                    .getSetFromGivenName(widget.setName)
+                                    .words[questions[1]]
+                                    .backWord),
+                              ),
+                            ),
+                            Card(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _questionThreeColorState =
+                                      checkAnswer(3, questions[3], 2);
+                                  _questionNotifier.value++;
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _questionThreeColorState,
+                                ),
+                                child: Text(value
+                                    .getSetFromGivenName(widget.setName)
+                                    .words[questions[2]]
+                                    .backWord),
+                              ),
+                            ),
+                            Text(
+                              value
+                                  .getSetFromGivenName(widget.setName)
+                                  .words[questions[questions[3]]]
+                                  .backWord,
+                            ),
+                          ],
+                        );
+                      },
+                    )
                   ],
                 );
               }
@@ -212,6 +251,9 @@ class _LearnPageState extends State<LearnPage> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               _counterNotifier.value++;
+              _questionOneColorState = Colors.white70;
+              _questionTwoColorState = Colors.white70;
+              _questionThreeColorState = Colors.white70;
               // _changeLastWordIndex(
               //     _randomWordIndexByConfidenceLevel);
             },
@@ -227,4 +269,33 @@ class _LearnPageState extends State<LearnPage> {
     _counterNotifier.dispose();
     super.dispose();
   }
+
+  Color checkAnswer(int caller, int correctAnswer, int givenAnswer) {
+  // TODO: block giving answers after response
+  // TODO: delete unnecessary duplication (if)
+  // TODO: delete unnecessary duplication (if + return)
+  if (givenAnswer == correctAnswer) {
+    return Colors.green;
+  } else {
+    if (correctAnswer != 0) {
+      _questionOneColorState = Colors.red;
+    }
+    if (correctAnswer != 1) {
+      _questionTwoColorState = Colors.red;
+    }
+    if (correctAnswer != 2) {
+      _questionThreeColorState = Colors.red;
+    }
+    if (correctAnswer == 0) {
+      _questionOneColorState = Colors.green;
+    }
+    if (correctAnswer == 1) {
+      _questionTwoColorState = Colors.green;
+    }
+    if (correctAnswer == 2) {
+      _questionThreeColorState = Colors.green;
+    }
+    return Colors.red;
+  }
+}
 }
