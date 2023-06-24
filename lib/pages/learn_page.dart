@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:dart_random_choice/dart_random_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:le_word_app/data/set_list_data.dart';
@@ -67,6 +68,32 @@ int badAnswer(int confidenceLevel) {
   return (confidenceLevel / 2).ceil();
 }
 
+List<int> returnQuestions(int setLength, int lastWordIndex) {
+  List<int> indexesOfRandomWords = [-1, -1, -1];
+  int indexOfCorrectAnswer = Random().nextInt(3);
+  indexesOfRandomWords[indexOfCorrectAnswer] = lastWordIndex;
+
+  int randomWordIndex = -1;
+  int indexForRandomWord = Random().nextInt(3);
+
+  for (int i = 0; i < 2; i++) {
+    while (randomWordIndex == -1 ||
+        indexesOfRandomWords[indexForRandomWord] == randomWordIndex ||
+        indexesOfRandomWords[indexOfCorrectAnswer] == randomWordIndex) {
+      randomWordIndex = Random().nextInt(setLength);
+    }
+
+    while (indexesOfRandomWords[indexForRandomWord] != -1) {
+      indexForRandomWord = Random().nextInt(3);
+    }
+
+    indexesOfRandomWords[indexForRandomWord] = randomWordIndex;
+  }
+
+  indexesOfRandomWords.add(indexOfCorrectAnswer);
+  return indexesOfRandomWords;
+}
+
 class _LearnPageState extends State<LearnPage> {
   // @override
   // void initState() {
@@ -95,9 +122,10 @@ class _LearnPageState extends State<LearnPage> {
           body: ValueListenableBuilder(
             valueListenable: _counterNotifier,
             builder: (context, val, _) {
-              if (value.getSetFromGivenName(widget.setName).words.isEmpty) {
+              if (value.getSetFromGivenName(widget.setName).words.length < 3) {
                 // add Scaffold and empty set alert
-                return Text('No data in set. Add words to start learning.');
+                return Text(
+                    'Not enough data in set. Add ${3 - value.getSetFromGivenName(widget.setName).words.length} word${value.getSetFromGivenName(widget.setName).words.length == 2 ? '' : 's'} to start learning.');
               } else {
                 int randomWordIndexByConfidenceLevel =
                     returnRandomWordIndexByConfidenceLevel(
@@ -110,6 +138,10 @@ class _LearnPageState extends State<LearnPage> {
                     randomWordIndexByConfidenceLevel,
                     _lastWordIndex);
                 _lastWordIndex = randomWordIndexByConfidenceLevel;
+
+                List<int> questions = returnQuestions(
+                    value.getSetFromGivenName(widget.setName).words.length,
+                    _lastWordIndex);
 
                 // () => _changeLastWordIndex(
                 //     randomWordIndexByConfidenceLevel, _lastWordIndex);
@@ -129,23 +161,49 @@ class _LearnPageState extends State<LearnPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Center(
-                              child: Text(
-                            '${currentWordToLearn.defaultWord}',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Noto Sans',
-                            ),
-                          )
-                              // child: Column(
-                              //   children: [
-                              //     Text('Word: ${currentWordToLearn.defaultWord}')
-                              //   ],
-                              // ),
+                            child: Text(
+                              '${currentWordToLearn.defaultWord}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontFamily: 'Noto Sans',
                               ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    Card(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(value
+                            .getSetFromGivenName(widget.setName)
+                            .words[questions[0]]
+                            .backWord),
+                      ),
+                    ),
+                    Card(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(value
+                            .getSetFromGivenName(widget.setName)
+                            .words[questions[1]]
+                            .backWord),
+                      ),
+                    ),
+                    Card(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(value
+                            .getSetFromGivenName(widget.setName)
+                            .words[questions[2]]
+                            .backWord),
+                      ),
+                    ),
+                    Text(value
+                        .getSetFromGivenName(widget.setName)
+                        .words[questions[questions[3]]]
+                        .backWord),
                   ],
                 );
               }
