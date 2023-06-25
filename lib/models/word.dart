@@ -1,7 +1,7 @@
 class WordModel {
   final String defaultWord;
   final String backWord;
-  final int confidenceLevel;
+  int confidenceLevel;
 
 
   WordModel({

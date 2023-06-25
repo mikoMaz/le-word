@@ -4,7 +4,6 @@ import 'package:le_word_app/models/set.dart';
 import 'package:le_word_app/models/word.dart';
 
 class SetListData extends ChangeNotifier {
-
   final db = HiveDatabase();
 
   List<WordSetModel> setList = [
@@ -15,12 +14,12 @@ class SetListData extends ChangeNotifier {
         WordModel(
           defaultWord: 'deweloper',
           backWord: 'desarrollar',
-          confidenceLevel: 0,
+          confidenceLevel: 10,
         ),
         WordModel(
           defaultWord: 'komputer',
           backWord: 'computadora',
-          confidenceLevel: 0,
+          confidenceLevel: 10,
         ),
       ],
     )
@@ -44,7 +43,7 @@ class SetListData extends ChangeNotifier {
     setList.add(WordSetModel(name: setName, language: language, words: []));
 
     notifyListeners();
-    
+
     // save to db
     db.saveToDatabase(setList);
   }
@@ -62,7 +61,7 @@ class SetListData extends ChangeNotifier {
       WordModel(
         defaultWord: aDefaultWord,
         backWord: aBackWord,
-        confidenceLevel: 0,
+        confidenceLevel: 10,
       ),
     );
 
@@ -88,5 +87,16 @@ class SetListData extends ChangeNotifier {
   int numberOfWordsInSet(String setName) {
     WordSetModel specificSetWithGivenName = getSetFromGivenName(setName);
     return specificSetWithGivenName.words.length;
+  }
+
+  void updateWord(String setName, int wordIndex, String defaultWord,
+      String backWord, int confidenceLevel) {
+    WordSetModel specificSetWithGivenName = getSetFromGivenName(setName);
+    // TODO: use getWordFromGivenName; better to use wordIndex insted??? (word duplication problem)
+    specificSetWithGivenName.words[wordIndex].confidenceLevel = confidenceLevel;
+    // TOOD: update remaining parameters or delete them
+
+    // notifyListeners();
+    db.saveToDatabase(setList);
   }
 }

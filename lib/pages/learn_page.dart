@@ -60,16 +60,17 @@ WordModel returnCurrentWordToLearn(
   return nextWord;
 }
 
-int goodAnswer(int confidenceLevel) {
+int correctAnswerConfidenceLevel(int confidenceLevel) {
   return confidenceLevel + ((100 - confidenceLevel) / 2).floor();
 }
 
-int badAnswer(int confidenceLevel) {
+int wrongAnswerConfidenceLevel(int confidenceLevel) {
   return (confidenceLevel / 2).ceil();
 }
 
 List<int> returnQuestions(int setLength, int lastWordIndex) {
   // TODO: show wrong answers according to confidenceLevel
+  // TODO: don't show answers with >= 75 confidence level or any other
   List<int> indexesOfRandomWords = [-1, -1, -1];
   int indexOfCorrectAnswer = Random().nextInt(3);
   indexesOfRandomWords[indexOfCorrectAnswer] = lastWordIndex;
@@ -95,18 +96,10 @@ List<int> returnQuestions(int setLength, int lastWordIndex) {
   return indexesOfRandomWords;
 }
 
-
-
 class _LearnPageState extends State<LearnPage> {
   // @override
   // void initState() {
   //   super.initState();
-  // }
-
-  // _changeLastWordIndex(int lastWordIndex) {
-  //   _lastWordIndex = lastWordIndex;
-  //   print('LWI: ' + _lastWordIndex.toString());
-  //   setState(() {});
   // }
 
   final _counterNotifier = ValueNotifier<int>(0);
@@ -150,11 +143,6 @@ class _LearnPageState extends State<LearnPage> {
                     value.getSetFromGivenName(widget.setName).words.length,
                     _lastWordIndex);
 
-                // () => _changeLastWordIndex(
-                //     randomWordIndexByConfidenceLevel, _lastWordIndex);
-
-                // return Text('Word: ${currentWordToLearn.defaultWord}');
-                // return Text('Word: ${value.getSetFromGivenName(widget.setName).words[val].defaultWord}');
                 return Column(
                   children: [
                     Expanded(
@@ -188,8 +176,15 @@ class _LearnPageState extends State<LearnPage> {
                             Card(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _questionOneColorState =
-                                      checkAnswer(1, questions[3], 0);
+                                  _questionOneColorState = checkAnswer(
+                                      questions[0],
+                                      value
+                                          .getSetFromGivenName(widget.setName)
+                                          .words[questions[0]]
+                                          .confidenceLevel,
+                                      questions[questions[3]],
+                                      questions[3],
+                                      0);
                                   _questionNotifier.value++;
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -204,8 +199,15 @@ class _LearnPageState extends State<LearnPage> {
                             Card(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _questionTwoColorState =
-                                      checkAnswer(2, questions[3], 1);
+                                  _questionTwoColorState = checkAnswer(
+                                      questions[1],
+                                      value
+                                          .getSetFromGivenName(widget.setName)
+                                          .words[questions[1]]
+                                          .confidenceLevel,
+                                      questions[questions[3]],
+                                      questions[3],
+                                      1);
                                   _questionNotifier.value++;
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -220,8 +222,15 @@ class _LearnPageState extends State<LearnPage> {
                             Card(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _questionThreeColorState =
-                                      checkAnswer(3, questions[3], 2);
+                                  _questionThreeColorState = checkAnswer(
+                                      questions[2],
+                                      value
+                                          .getSetFromGivenName(widget.setName)
+                                          .words[questions[2]]
+                                          .confidenceLevel,
+                                      questions[questions[3]],
+                                      questions[3],
+                                      2);
                                   _questionNotifier.value++;
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -267,35 +276,54 @@ class _LearnPageState extends State<LearnPage> {
   @override
   void dispose() {
     _counterNotifier.dispose();
+    _questionNotifier.dispose();
     super.dispose();
   }
 
-  Color checkAnswer(int caller, int correctAnswer, int givenAnswer) {
-  // TODO: block giving answers after response
-  // TODO: delete unnecessary duplication (if)
-  // TODO: delete unnecessary duplication (if + return)
-  if (givenAnswer == correctAnswer) {
-    return Colors.green;
-  } else {
-    if (correctAnswer != 0) {
-      _questionOneColorState = Colors.red;
+  Color checkAnswer(
+      int givenAbsoluteWordIndexAnswer,
+      int confidenceLevelOfAnswer,
+      int correctAbsoluteWordIndex,
+      int correctAnswer,
+      int givenAnswer) {
+    // TODO: block giving answers after response
+    // TODO: delete unnecessary duplication (if)
+    // TODO: delete unnecessary duplication (if + return)
+    // TODO: add 'Don't know answer'; calculate every word as wrongAnswerConfidenceLevel
+    if (givenAnswer == correctAnswer) {
+      Provider.of<SetListData>(context, listen: false).updateWord(
+          widget.setName,
+          correctAbsoluteWordIndex,
+          'NOT IMPORTANT',
+          'NOT IMPORTANT',
+          correctAnswerConfidenceLevel(confidenceLevelOfAnswer));
+      return Colors.green;
+    } else {
+      Provider.of<SetListData>(context, listen: false).updateWord(
+          widget.setName,
+          givenAbsoluteWordIndexAnswer,
+          'NOT IMPORTANT',
+          'NOT IMPORTANT',
+          wrongAnswerConfidenceLevel(confidenceLevelOfAnswer));
+      if (correctAnswer != 0) {
+        _questionOneColorState = Colors.red;
+      }
+      if (correctAnswer != 1) {
+        _questionTwoColorState = Colors.red;
+      }
+      if (correctAnswer != 2) {
+        _questionThreeColorState = Colors.red;
+      }
+      if (correctAnswer == 0) {
+        _questionOneColorState = Colors.green;
+      }
+      if (correctAnswer == 1) {
+        _questionTwoColorState = Colors.green;
+      }
+      if (correctAnswer == 2) {
+        _questionThreeColorState = Colors.green;
+      }
+      return Colors.red;
     }
-    if (correctAnswer != 1) {
-      _questionTwoColorState = Colors.red;
-    }
-    if (correctAnswer != 2) {
-      _questionThreeColorState = Colors.red;
-    }
-    if (correctAnswer == 0) {
-      _questionOneColorState = Colors.green;
-    }
-    if (correctAnswer == 1) {
-      _questionTwoColorState = Colors.green;
-    }
-    if (correctAnswer == 2) {
-      _questionThreeColorState = Colors.green;
-    }
-    return Colors.red;
   }
-}
 }
