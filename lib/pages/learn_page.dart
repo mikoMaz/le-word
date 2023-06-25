@@ -105,6 +105,13 @@ class _LearnPageState extends State<LearnPage> {
   final _counterNotifier = ValueNotifier<int>(0);
   final _questionNotifier = ValueNotifier<int>(0);
   int _lastWordIndex = -1;
+  bool _questionAnswerStatus = false;
+  bool _correctAnswerStatus = false;
+
+  final Color _defaultAnswerColor = Colors.white70;
+  final Color _correctAnswerColor = Colors.green;
+  final Color _wrongAnswerColor = Colors.red;
+  
   Color _questionOneColorState = Colors.white70;
   Color _questionTwoColorState = Colors.white70;
   Color _questionThreeColorState = Colors.white70;
@@ -148,7 +155,7 @@ class _LearnPageState extends State<LearnPage> {
                     Expanded(
                       child: Center(
                         child: Container(
-                          margin: EdgeInsets.all(25),
+                          margin: const EdgeInsets.all(25),
                           width: 280,
                           height: 280,
                           decoration: BoxDecoration(
@@ -159,7 +166,7 @@ class _LearnPageState extends State<LearnPage> {
                             child: Text(
                               currentWordToLearn.defaultWord,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 30,
                                 fontFamily: 'Noto Sans',
                               ),
@@ -176,19 +183,24 @@ class _LearnPageState extends State<LearnPage> {
                             Card(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _questionOneColorState = checkAnswer(
-                                      questions[0],
-                                      value
-                                          .getSetFromGivenName(widget.setName)
-                                          .words[questions[0]]
-                                          .confidenceLevel,
-                                      questions[questions[3]],
-                                      questions[3],
-                                      0);
-                                  _questionNotifier.value++;
+                                  if (!_questionAnswerStatus) {
+                                    _questionOneColorState = checkAnswer(
+                                        questions[0],
+                                        value
+                                            .getSetFromGivenName(widget.setName)
+                                            .words[questions[0]]
+                                            .confidenceLevel,
+                                        questions[questions[3]],
+                                        questions[3],
+                                        0);
+                                    _questionNotifier.value++;
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _questionOneColorState,
+                                  backgroundColor: !_correctAnswerStatus ||
+                                          _questionOneColorState == _correctAnswerColor
+                                      ? _questionOneColorState
+                                      : _defaultAnswerColor,
                                 ),
                                 child: Text(value
                                     .getSetFromGivenName(widget.setName)
@@ -199,19 +211,24 @@ class _LearnPageState extends State<LearnPage> {
                             Card(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _questionTwoColorState = checkAnswer(
-                                      questions[1],
-                                      value
-                                          .getSetFromGivenName(widget.setName)
-                                          .words[questions[1]]
-                                          .confidenceLevel,
-                                      questions[questions[3]],
-                                      questions[3],
-                                      1);
-                                  _questionNotifier.value++;
+                                  if (!_questionAnswerStatus) {
+                                    _questionTwoColorState = checkAnswer(
+                                        questions[1],
+                                        value
+                                            .getSetFromGivenName(widget.setName)
+                                            .words[questions[1]]
+                                            .confidenceLevel,
+                                        questions[questions[3]],
+                                        questions[3],
+                                        1);
+                                    _questionNotifier.value++;
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _questionTwoColorState,
+                                  backgroundColor: !_correctAnswerStatus ||
+                                          _questionTwoColorState == _correctAnswerColor
+                                      ? _questionTwoColorState
+                                      : _defaultAnswerColor,
                                 ),
                                 child: Text(value
                                     .getSetFromGivenName(widget.setName)
@@ -222,19 +239,25 @@ class _LearnPageState extends State<LearnPage> {
                             Card(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _questionThreeColorState = checkAnswer(
-                                      questions[2],
-                                      value
-                                          .getSetFromGivenName(widget.setName)
-                                          .words[questions[2]]
-                                          .confidenceLevel,
-                                      questions[questions[3]],
-                                      questions[3],
-                                      2);
-                                  _questionNotifier.value++;
+                                  if (!_questionAnswerStatus) {
+                                    _questionThreeColorState = checkAnswer(
+                                        questions[2],
+                                        value
+                                            .getSetFromGivenName(widget.setName)
+                                            .words[questions[2]]
+                                            .confidenceLevel,
+                                        questions[questions[3]],
+                                        questions[3],
+                                        2);
+                                    _questionNotifier.value++;
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _questionThreeColorState,
+                                  backgroundColor: !_correctAnswerStatus ||
+                                          _questionThreeColorState ==
+                                              _correctAnswerColor
+                                      ? _questionThreeColorState
+                                      : _defaultAnswerColor,
                                 ),
                                 child: Text(value
                                     .getSetFromGivenName(widget.setName)
@@ -260,9 +283,12 @@ class _LearnPageState extends State<LearnPage> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               _counterNotifier.value++;
-              _questionOneColorState = Colors.white70;
-              _questionTwoColorState = Colors.white70;
-              _questionThreeColorState = Colors.white70;
+              _questionOneColorState = _defaultAnswerColor;
+              _questionTwoColorState = _defaultAnswerColor;
+              _questionThreeColorState = _defaultAnswerColor;
+              _questionAnswerStatus = false;
+              _correctAnswerStatus = false;
+
               // _changeLastWordIndex(
               //     _randomWordIndexByConfidenceLevel);
             },
@@ -297,7 +323,8 @@ class _LearnPageState extends State<LearnPage> {
           'NOT IMPORTANT',
           'NOT IMPORTANT',
           correctAnswerConfidenceLevel(confidenceLevelOfAnswer));
-      return Colors.green;
+      _correctAnswerStatus = true;
+      return _correctAnswerColor;
     } else {
       Provider.of<SetListData>(context, listen: false).updateWord(
           widget.setName,
@@ -306,24 +333,25 @@ class _LearnPageState extends State<LearnPage> {
           'NOT IMPORTANT',
           wrongAnswerConfidenceLevel(confidenceLevelOfAnswer));
       if (correctAnswer != 0) {
-        _questionOneColorState = Colors.red;
+        _questionOneColorState = _wrongAnswerColor;
       }
       if (correctAnswer != 1) {
-        _questionTwoColorState = Colors.red;
+        _questionTwoColorState = _wrongAnswerColor;
       }
       if (correctAnswer != 2) {
-        _questionThreeColorState = Colors.red;
+        _questionThreeColorState = _wrongAnswerColor;
       }
       if (correctAnswer == 0) {
-        _questionOneColorState = Colors.green;
+        _questionOneColorState = _correctAnswerColor;
       }
       if (correctAnswer == 1) {
-        _questionTwoColorState = Colors.green;
+        _questionTwoColorState = _correctAnswerColor;
       }
       if (correctAnswer == 2) {
-        _questionThreeColorState = Colors.green;
+        _questionThreeColorState = _correctAnswerColor;
       }
-      return Colors.red;
+      _questionAnswerStatus = true;
+      return _wrongAnswerColor;
     }
   }
 }
