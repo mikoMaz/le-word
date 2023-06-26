@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:le_word_app/data/set_list_data.dart';
+import 'package:le_word_app/pages/flashcard_page.dart';
 import 'package:le_word_app/pages/learn_page.dart';
 import 'package:le_word_app/pages/set_page.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void goToFlashcardPageBySetName(String setName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FlashcardPage(setName: setName),
+      ),
+    );
+  }
+
   void save() {
     String newNameTextController = setNewNameTextController.text;
 
@@ -103,23 +113,33 @@ class _HomePageState extends State<HomePage> {
             ),
           ), */
               Card(
+            margin: EdgeInsets.all(14),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Row(children: [
-                Text(value.getSetListData()[index].name),
-                ElevatedButton.icon(
+              child: Row(
+                children: [
+                  Text(value.getSetListData()[index].name),
+                  ElevatedButton.icon(
                     onPressed: () =>
                         goToSetByName(value.getSetListData()[index].name),
-                    icon: Icon(Icons.account_circle),
-                    label: Text('')),
-                ElevatedButton.icon(
+                    icon: Icon(Icons.list_rounded),
+                    label: Text(''),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () => goToFlashcardPageBySetName(
+                        value.getSetListData()[index].name),
+                    icon: Icon(Icons.layers),
+                    label: Text(''),
+                  ),
+                  ElevatedButton.icon(
                     onPressed: () =>
                         goToLearnByName(value.getSetListData()[index].name),
-                    icon: Icon(Icons.abc_sharp),
-                    label: Text(''))
-              ]),
+                    icon: Icon(Icons.library_books),
+                    label: Text(''),
+                  )
+                ],
+              ),
             ),
-            margin: EdgeInsets.all(14),
           ),
         ),
       )),
