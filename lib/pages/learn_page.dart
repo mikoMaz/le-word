@@ -108,29 +108,28 @@ class _LearnPageState extends State<LearnPage> {
   bool _questionAnswerStatus = false;
   bool _correctAnswerStatus = false;
 
-  final Color _defaultAnswerColor = Colors.white70;
+  final Color _defaultAnswerColor = Color.fromARGB(255, 82, 119, 173);
   final Color _correctAnswerColor = Colors.green;
   final Color _wrongAnswerColor = Colors.red;
-  
-  Color _questionOneColorState = Colors.white70;
-  Color _questionTwoColorState = Colors.white70;
-  Color _questionThreeColorState = Colors.white70;
+
+  Color _questionOneColorState = Color.fromARGB(255, 82, 119, 173);
+  Color _questionTwoColorState = Color.fromARGB(255, 82, 119, 173);
+  Color _questionThreeColorState = Color.fromARGB(255, 82, 119, 173);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<SetListData>(
       builder: (context, value, child) {
-        // List<int> rarandomOrderList =
-        //     randomOrder(value.numberOfWordsInSet(widget.setName));
         List<double> confidenceLevelList = listOfConfidenceLevels(
             value.getSetFromGivenName(widget.setName).words);
 
         return Scaffold(
+          backgroundColor: const Color.fromARGB(255, 17, 36, 53),
           body: ValueListenableBuilder(
             valueListenable: _counterNotifier,
             builder: (context, val, _) {
               if (value.getSetFromGivenName(widget.setName).words.length < 3) {
-                // add Scaffold and empty set alert
+                // TODO: add Scaffold and empty set alert
                 return Text(
                     'Not enough data in set. Add ${3 - value.getSetFromGivenName(widget.setName).words.length} word${value.getSetFromGivenName(widget.setName).words.length == 2 ? '' : 's'} to start learning.');
               } else {
@@ -152,6 +151,47 @@ class _LearnPageState extends State<LearnPage> {
 
                 return Column(
                   children: [
+                    Container(
+                      // padding: EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.black),
+                      width: double.infinity,
+                      height: 50,
+                      margin: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                            ),
+                            height: double.infinity,
+                            child: ElevatedButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)))),
+                                child: const Icon(
+                                    Icons.arrow_circle_left_outlined)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: Text(
+                              widget.setName,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                     Expanded(
                       child: Center(
                         child: Container(
@@ -159,7 +199,7 @@ class _LearnPageState extends State<LearnPage> {
                           width: 280,
                           height: 280,
                           decoration: BoxDecoration(
-                            color: Colors.grey[100],
+                            color: const Color.fromARGB(255, 71, 59, 118),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Center(
@@ -178,100 +218,134 @@ class _LearnPageState extends State<LearnPage> {
                     ValueListenableBuilder(
                       valueListenable: _questionNotifier,
                       builder: (questionContext, questionValue, _) {
-                        return Column(
-                          children: [
-                            Card(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (!_questionAnswerStatus) {
-                                    _questionOneColorState = checkAnswer(
-                                        questions[0],
-                                        value
-                                            .getSetFromGivenName(widget.setName)
-                                            .words[questions[0]]
-                                            .confidenceLevel,
-                                        questions[questions[3]],
-                                        questions[3],
-                                        0);
-                                    _questionNotifier.value++;
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: !_correctAnswerStatus ||
-                                          _questionOneColorState == _correctAnswerColor
-                                      ? _questionOneColorState
-                                      : _defaultAnswerColor,
+                        return Container(
+                          padding: const EdgeInsets.only(
+                              left: 70, right: 70, bottom: 50),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Card(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    if (!_questionAnswerStatus) {
+                                      _questionOneColorState = checkAnswer(
+                                          questions[0],
+                                          value
+                                              .getSetFromGivenName(
+                                                  widget.setName)
+                                              .words[questions[0]]
+                                              .confidenceLevel,
+                                          questions[questions[3]],
+                                          questions[3],
+                                          0);
+                                      _questionNotifier.value++;
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: !_correctAnswerStatus ||
+                                            _questionOneColorState ==
+                                                _correctAnswerColor
+                                        ? _questionOneColorState
+                                        : _defaultAnswerColor,
+                                    minimumSize: const Size(0, 50),
+                                  ),
+                                  child: Text(
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        // fontSize: 30,
+                                        fontFamily: 'Noto Sans',
+                                      ),
+                                      value
+                                          .getSetFromGivenName(widget.setName)
+                                          .words[questions[0]]
+                                          .backWord),
                                 ),
-                                child: Text(value
-                                    .getSetFromGivenName(widget.setName)
-                                    .words[questions[0]]
-                                    .backWord),
                               ),
-                            ),
-                            Card(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (!_questionAnswerStatus) {
-                                    _questionTwoColorState = checkAnswer(
-                                        questions[1],
-                                        value
-                                            .getSetFromGivenName(widget.setName)
-                                            .words[questions[1]]
-                                            .confidenceLevel,
-                                        questions[questions[3]],
-                                        questions[3],
-                                        1);
-                                    _questionNotifier.value++;
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: !_correctAnswerStatus ||
-                                          _questionTwoColorState == _correctAnswerColor
-                                      ? _questionTwoColorState
-                                      : _defaultAnswerColor,
+                              Card(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    if (!_questionAnswerStatus) {
+                                      _questionTwoColorState = checkAnswer(
+                                          questions[1],
+                                          value
+                                              .getSetFromGivenName(
+                                                  widget.setName)
+                                              .words[questions[1]]
+                                              .confidenceLevel,
+                                          questions[questions[3]],
+                                          questions[3],
+                                          1);
+                                      _questionNotifier.value++;
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: !_correctAnswerStatus ||
+                                            _questionTwoColorState ==
+                                                _correctAnswerColor
+                                        ? _questionTwoColorState
+                                        : _defaultAnswerColor,
+                                    minimumSize: const Size(0, 50),
+                                  ),
+                                  child: Text(
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        // fontSize: 30,
+                                        fontFamily: 'Noto Sans',
+                                      ),
+                                      value
+                                          .getSetFromGivenName(widget.setName)
+                                          .words[questions[1]]
+                                          .backWord),
                                 ),
-                                child: Text(value
-                                    .getSetFromGivenName(widget.setName)
-                                    .words[questions[1]]
-                                    .backWord),
                               ),
-                            ),
-                            Card(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (!_questionAnswerStatus) {
-                                    _questionThreeColorState = checkAnswer(
-                                        questions[2],
-                                        value
-                                            .getSetFromGivenName(widget.setName)
-                                            .words[questions[2]]
-                                            .confidenceLevel,
-                                        questions[questions[3]],
-                                        questions[3],
-                                        2);
-                                    _questionNotifier.value++;
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: !_correctAnswerStatus ||
-                                          _questionThreeColorState ==
-                                              _correctAnswerColor
-                                      ? _questionThreeColorState
-                                      : _defaultAnswerColor,
+                              Card(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    if (!_questionAnswerStatus) {
+                                      _questionThreeColorState = checkAnswer(
+                                          questions[2],
+                                          value
+                                              .getSetFromGivenName(
+                                                  widget.setName)
+                                              .words[questions[2]]
+                                              .confidenceLevel,
+                                          questions[questions[3]],
+                                          questions[3],
+                                          2);
+                                      _questionNotifier.value++;
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: !_correctAnswerStatus ||
+                                            _questionThreeColorState ==
+                                                _correctAnswerColor
+                                        ? _questionThreeColorState
+                                        : _defaultAnswerColor,
+                                    minimumSize: const Size(0, 50),
+                                  ),
+                                  child: Text(
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        // fontSize: 30,
+                                        fontFamily: 'Noto Sans',
+                                      ),
+                                      value
+                                          .getSetFromGivenName(widget.setName)
+                                          .words[questions[2]]
+                                          .backWord),
                                 ),
-                                child: Text(value
-                                    .getSetFromGivenName(widget.setName)
-                                    .words[questions[2]]
-                                    .backWord),
                               ),
-                            ),
-                            Text(
-                              value
-                                  .getSetFromGivenName(widget.setName)
-                                  .words[questions[questions[3]]]
-                                  .backWord,
-                            ),
-                          ],
+                              Text(
+                                value
+                                    .getSetFromGivenName(widget.setName)
+                                    .words[questions[questions[3]]]
+                                    .backWord,
+                              ),
+                            ],
+                          ),
                         );
                       },
                     )
@@ -288,11 +362,8 @@ class _LearnPageState extends State<LearnPage> {
               _questionThreeColorState = _defaultAnswerColor;
               _questionAnswerStatus = false;
               _correctAnswerStatus = false;
-
-              // _changeLastWordIndex(
-              //     _randomWordIndexByConfidenceLevel);
             },
-            child: const Icon(Icons.add),
+            child: const Icon(Icons.navigate_next_rounded),
           ),
         );
       },
