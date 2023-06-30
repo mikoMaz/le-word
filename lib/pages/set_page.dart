@@ -25,14 +25,14 @@ class _SetPageState extends State<SetPage> {
           children: [
             TextField(
               controller: defaultWordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'word',
               ),
             ),
             TextField(
               controller: backWordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'translation',
               ),
@@ -42,11 +42,11 @@ class _SetPageState extends State<SetPage> {
         actions: [
           MaterialButton(
             onPressed: save,
-            child: Text('save'),
+            child: const Text('save'),
           ),
           MaterialButton(
             onPressed: cancel,
-            child: Text('cancel'),
+            child: const Text('cancel'),
           ),
         ],
       ),
@@ -78,10 +78,11 @@ class _SetPageState extends State<SetPage> {
   Widget build(BuildContext context) {
     return Consumer<SetListData>(
       builder: (context, value, child) => Scaffold(
-        // appBar: AppBar(
-        //   title: Text(widget.setName), // from where is widget??
-        // ),
         floatingActionButton: FloatingActionButton(
+          foregroundColor: Colors.white,
+          hoverColor: Colors.grey[600],
+          splashColor: Colors.grey[500],
+          backgroundColor: Colors.grey[500],
           onPressed: createNewWordPair,
           child: const Icon(Icons.add),
         ),

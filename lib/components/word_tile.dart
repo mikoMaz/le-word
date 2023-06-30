@@ -12,34 +12,59 @@ class WordTile extends StatelessWidget {
       required this.defaultWord,
       required this.backWord,
       required this.confidenceLevel});
-    
 
-  void goToTileLearn() {
-    
-  }
+  void goToTileLearn() {}
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[100],
-      child: ListTile(
-          title: Text(defaultWord),
-          subtitle: Row(
-            children: [
-              Chip(
-                label: Text("$confidenceLevel"),
-              )
-            ],
-          ),
-          trailing: //Row(children: [
-            IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
-              onPressed: () => goToTileLearn,
-                  //goToSetByName(value.getSetListData()[index].name),
-            ),
-          // ]
-          // )
-          ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        color: Colors.grey[300],
+        margin: const EdgeInsets.only(left: 17, top: 3, right: 17, bottom: 10),
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 60,
+              width: 400,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 14),
+                    constraints: const BoxConstraints(maxWidth: 120),
+                    child: Text(
+                      defaultWord,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(left: 14),
+                    constraints: const BoxConstraints(maxWidth: 120),
+                    child: Text(
+                      backWord,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(left: 14),
+                    child: Text(
+                      "Confidence level: ${confidenceLevel.toString()}",
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
