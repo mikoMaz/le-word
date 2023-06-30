@@ -25,18 +25,18 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Create new set'),
+        title: const Text('Create new set'),
         content: TextField(
           controller: setNewNameTextController,
         ),
         actions: [
           MaterialButton(
             onPressed: save,
-            child: Text('save'),
+            child: const Text('save'),
           ),
           MaterialButton(
             onPressed: cancel,
-            child: Text('cancel'),
+            child: const Text('cancel'),
           ),
         ],
       ),
@@ -100,47 +100,94 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.black,
         ),
         floatingActionButton: FloatingActionButton(
+          foregroundColor: Colors.white,
+          hoverColor: Colors.grey[600],
+          splashColor: Colors.grey[500],
+          backgroundColor: Colors.grey[500],
           onPressed: createNewSet,
           child: const Icon(Icons.add),
         ),
         body: ListView.builder(
           itemCount: value.getSetListData().length,
-          itemBuilder: (context,
-                  index) => /* ListTile(
-            title: Text(value.getSetListData()[index].name),
-            trailing: IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
-              onPressed: () => goToSetByName(value.getSetListData()[index].name),
+          itemBuilder: (context, index) => Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
-          ), */
-              Card(
-                color: Color.fromARGB(255, 90,100,134),
-            margin: EdgeInsets.all(14),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(value.getSetListData()[index].name),
-                  ElevatedButton.icon(
-                    onPressed: () =>
-                        goToSetByName(value.getSetListData()[index].name),
-                    icon: Icon(Icons.list_rounded),
-                    label: Text(''),
+            color: Colors.grey[300],
+            margin: const EdgeInsets.only(left: 17, top: 17, right: 17),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  height: 60,
+                  child: Center(
+                    child: Text(
+                      value.getSetListData()[index].name,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontFamily: 'Noto Sans',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () => goToFlashcardPageBySetName(
-                        value.getSetListData()[index].name),
-                    icon: Icon(Icons.layers),
-                    label: Text(''),
+                ),
+                Container(
+                  height: 60,
+                  child: Row(
+                    children: [
+                      Container(
+                        height: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () =>
+                              goToSetByName(value.getSetListData()[index].name),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[500],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                          child: const Icon(Icons.list_rounded),
+                        ),
+                      ),
+                      Container(
+                        height: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => goToFlashcardPageBySetName(
+                              value.getSetListData()[index].name),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[500],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.zero),
+                            ),
+                          ),
+                          child: const Icon(Icons.layers),
+                        ),
+                      ),
+                      Container(
+                        height: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => goToLearnByName(
+                              value.getSetListData()[index].name),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[500],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                bottomRight: Radius.circular(10),
+                              ),
+                            ),
+                          ),
+                          child: const Icon(Icons.library_books),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () =>
-                        goToLearnByName(value.getSetListData()[index].name),
-                    icon: Icon(Icons.library_books),
-                    label: Text(''),
-                  )
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
