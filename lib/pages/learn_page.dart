@@ -130,8 +130,62 @@ class _LearnPageState extends State<LearnPage> {
             builder: (context, val, _) {
               if (value.getSetFromGivenName(widget.setName).words.length < 3) {
                 // TODO: add Scaffold and empty set alert
-                return Text(
-                    'Not enough data in set. Add ${3 - value.getSetFromGivenName(widget.setName).words.length} word${value.getSetFromGivenName(widget.setName).words.length == 2 ? '' : 's'} to start learning.');
+                return Column(
+                  children: [
+                    /// Rounded app bar
+                    Container(
+                      // padding: EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.black),
+                      width: double.infinity,
+                      height: 50,
+                      margin: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomLeft: Radius.circular(10),
+                              ),
+                            ),
+                            height: double.infinity,
+                            child: ElevatedButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.black,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)))),
+                                child: const Icon(
+                                    Icons.arrow_circle_left_outlined)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(right: 30),
+                            child: Text(
+                              widget.setName,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        'Not enough data in set. Add ${3 - value.getSetFromGivenName(widget.setName).words.length} word${value.getSetFromGivenName(widget.setName).words.length == 2 ? '' : 's'} to start learning.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontFamily: 'Noto Sans',
+                        ),
+                      ),
+                    ),
+                  ],
+                );
               } else {
                 int randomWordIndexByConfidenceLevel =
                     returnRandomWordIndexByConfidenceLevel(
@@ -151,6 +205,7 @@ class _LearnPageState extends State<LearnPage> {
 
                 return Column(
                   children: [
+                    /// Rounded app bar
                     Container(
                       // padding: EdgeInsets.all(10),
                       decoration: const BoxDecoration(

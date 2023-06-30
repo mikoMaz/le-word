@@ -97,6 +97,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, value, child) => (Scaffold(
         appBar: AppBar(
           title: const Text('LeWord'),
+          backgroundColor: Colors.black,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: createNewSet,
@@ -113,6 +114,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ), */
               Card(
+                color: Color.fromARGB(255, 90,100,134),
             margin: EdgeInsets.all(14),
             child: Padding(
               padding: const EdgeInsets.all(8.0),

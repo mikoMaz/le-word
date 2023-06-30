@@ -27,10 +27,50 @@ class _FlashcardPageState extends State<FlashcardPage> {
             ? _currentWord
             : _currentWord;
         return Scaffold(
-          appBar: AppBar(title: const Text('Flashcard Page')),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              /// Rounded app bar
+              Container(
+                // padding: EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Colors.black),
+                width: double.infinity,
+                height: 50,
+                margin: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                        ),
+                      ),
+                      height: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10)))),
+                          child: const Icon(Icons.arrow_circle_left_outlined)),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(right: 30),
+                      child: Text(
+                        widget.setName,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              ),
               Center(
                 child: Container(
                   padding: const EdgeInsets.only(top: 100),

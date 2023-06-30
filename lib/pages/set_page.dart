@@ -78,16 +78,61 @@ class _SetPageState extends State<SetPage> {
   Widget build(BuildContext context) {
     return Consumer<SetListData>(
       builder: (context, value, child) => Scaffold(
-        appBar: AppBar(
-          title: Text(widget.setName), // from where is widget??
-        ),
+        // appBar: AppBar(
+        //   title: Text(widget.setName), // from where is widget??
+        // ),
         floatingActionButton: FloatingActionButton(
           onPressed: createNewWordPair,
           child: const Icon(Icons.add),
         ),
-        body: ListView.builder(
-            itemCount: value.numberOfWordsInSet(widget.setName),
-            itemBuilder: (context, index) => WordTile(
+        body: Column(
+          children: [
+            /// Rounded app bar
+            Container(
+              // padding: EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.black),
+              width: double.infinity,
+              height: 50,
+              margin: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
+                    ),
+                    height: double.infinity,
+                    child: ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    bottomLeft: Radius.circular(10)))),
+                        child: const Icon(Icons.arrow_circle_left_outlined)),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(right: 30),
+                    child: Text(
+                      widget.setName,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              // Expanded added for the ListView.builder, when in Column
+              child: ListView.builder(
+                itemCount: value.numberOfWordsInSet(widget.setName),
+                itemBuilder: (context, index) => WordTile(
                   setName: widget.setName,
                   defaultWord: value
                       .getSetFromGivenName(widget.setName)
@@ -101,7 +146,11 @@ class _SetPageState extends State<SetPage> {
                       .getSetFromGivenName(widget.setName)
                       .words[index]
                       .confidenceLevel,
-                )),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
