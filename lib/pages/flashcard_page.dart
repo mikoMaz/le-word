@@ -93,7 +93,7 @@ class _FlashcardPageState extends State<FlashcardPage> {
               ),
               Container(
                 padding:
-                    const EdgeInsets.only(left: 50, right: 50, bottom: 130),
+                    const EdgeInsets.only(left: 40, top: 60, right: 40, bottom: 110),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -112,9 +112,15 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               },
                             );
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[300],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                            ),
+                          ),
                           child: const Text(
                             'Previous word',
-                            style: TextStyle(fontSize: 17),
+                            style: TextStyle(fontSize: 17, color: Colors.black54),
                           ),
                         ),
                       ),
@@ -133,9 +139,15 @@ class _FlashcardPageState extends State<FlashcardPage> {
                               },
                             );
                           },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[300],
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                            ),
+                          ),
                           child: const Text(
                             'Next word',
-                            style: TextStyle(fontSize: 17),
+                            style: TextStyle(fontSize: 17, color: Colors.black54),
                           ),
                         ),
                       ),
